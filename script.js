@@ -17,14 +17,18 @@
     var container = document.getElementById(cfg.id);
     if(!container) return;
 
+    var thumbFolder = cfg.folder.replace("assets/", "assets/thumbs/");
+
     for(var i=1;i<=cfg.count;i++){
       var src = cfg.folder + i + ".jpg";
+      var thumbSrc = thumbFolder + i + ".jpg";
       var a = document.createElement("a");
       a.className = "art-card";
       a.href = src;
       a.setAttribute("data-caption", cfg.prefix + " " + i);
       var img = document.createElement("img");
-      img.src = src;
+      img.src = thumbSrc;
+      img.setAttribute("data-full", src);
       img.alt = cfg.prefix + " artwork " + i;
       var frame = document.createElement("span");
       frame.className = "art-card-frame";
@@ -66,7 +70,9 @@
   function collectGroup(groupName){
     var nodes = document.querySelectorAll('[data-group="'+groupName+'"] .art-card');
     return Array.prototype.map.call(nodes, function(a){
-      return { href:a.getAttribute("href"), caption:a.getAttribute("data-caption") || "" };
+      var img = a.querySelector("img");
+      var full = (img && img.getAttribute("data-full")) || a.getAttribute("href");
+      return { href:full, caption:a.getAttribute("data-caption") || "" };
     });
   }
 
